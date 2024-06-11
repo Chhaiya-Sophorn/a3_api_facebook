@@ -14,4 +14,11 @@ class UserController extends Controller
             'data'  => $request->user(),
         ]);
     }
+    public function register(Request $request): JsonResponse
+    {
+        return response()([
+           'message' => 'Register success',
+            'data' => $request->user()
+        ]);
+    }
 }
