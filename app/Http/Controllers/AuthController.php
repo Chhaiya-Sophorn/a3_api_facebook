@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -89,6 +90,30 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Logged out successfully'
+        ]);
+    }
+
+    // update photho profile --------------------------------
+
+    public function updateProfilePhoto(Request $request): JsonResponse
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $user = $request->user()->id;
+
+        $path = $request->file('profile_photo')->store('profile_photos', 'public');
+        if ($user->profile_photo) {
+            Storage::disk('public')->delete($user->profile_photo);
+        }
+
+        $user->profile_photo = $path;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profile photo updated successfully',
+            'data' => $user
         ]);
     }
 }

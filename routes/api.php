@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,9 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/user')->group(function() {
+Route::prefix('/user')->group(function () {
+    // Authentication Routes
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/me', [AuthController::class, 'index'])->middleware('auth:sanctum');
+
+    // Profile Management Routes
+    Route::put('/profile/photo', [AuthController::class, 'updateProfilePhoto']);
+});
+
+Route::prefix('/post')->group(function () {
+    Route::post('/create', [PostController::class, 'store']);
+    Route::get('/get/{id}', [PostController::class, 'show']);
+    Route::put('/update/{id}', [PostController::class, 'update']);
+    Route::delete('/delete/{id}', [PostController::class, 'destroy']);
 });

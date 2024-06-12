@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content')->nullable();
-            $table->integer('auth_id');
+            $table->string('image')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('tags')->nullable();
             $table->timestamps();
         });
+        
     }
 
     /**
