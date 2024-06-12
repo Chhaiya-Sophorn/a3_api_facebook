@@ -21,4 +21,11 @@ class UserController extends Controller
             'data' => $request->user()
         ]);
     }
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+        return response()->json([
+           'message' => 'Logout success'
+        ]);
+    }
 }
