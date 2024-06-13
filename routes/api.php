@@ -42,4 +42,5 @@ Route::prefix('/comment')->group(function() {
     Route::get('/get/{postId}', [CommentController::class, 'show']);
     Route::put('/update/{commentId}', [CommentController::class, 'update']);
     Route::delete('/delete/{commetId}', [CommentController::class, 'destroy']);
+    Route::post('/like-post',[LikesController::class, 'store']);
 });
