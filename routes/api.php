@@ -16,15 +16,18 @@ use App\Http\Controllers\PostController;
 */
 
 Route::prefix('/user')->group(function () {
-    // Authentication Routes
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/me', [AuthController::class, 'index'])->middleware('auth:sanctum');
-
-    // Profile Management Routes
-    Route::put('/profile/photo', [AuthController::class, 'updateProfilePhoto']);
 });
+
+Route::prefix('/information')->group(function () {
+    Route::get('{userId}/profile', [UserController::class,'show']);
+    Route::put('{userId}/profile', [UserController::class,'update']);
+    Route::post('{userId}/profile/picture', [AuthController::class,'uploadProfilePicture']);
+});
+
 
 Route::prefix('/post')->group(function () {
     Route::post('/create', [PostController::class, 'store']);

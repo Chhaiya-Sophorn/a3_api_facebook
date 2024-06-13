@@ -93,27 +93,25 @@ class AuthController extends Controller
         ]);
     }
 
-    // update photho profile --------------------------------
 
-    public function updateProfilePhoto(Request $request): JsonResponse
+    public function uploadProfilePicture(Request $request, $userId)
     {
+
         $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
 
-        $user = $request->user()->id;
+        $user = User::find($userId);
 
-        $path = $request->file('profile_photo')->store('profile_photos', 'public');
-        if ($user->profile_photo) {
-            Storage::disk('public')->delete($user->profile_photo);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        $user->profile_photo = $path;
+        $imagePath = $request->file('profile_photo')->store('profile_photos', 'public');
+
+        $user->profile_photo = $imagePath;
         $user->save();
 
-        return response()->json([
-            'message' => 'Profile photo updated successfully',
-            'data' => $user
-        ]);
+        return response()->json(['message' => 'Profile image updated successfully']);
     }
 }
