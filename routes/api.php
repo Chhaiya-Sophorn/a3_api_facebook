@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,4 +35,11 @@ Route::prefix('/post')->group(function () {
     Route::get('/get/{id}', [PostController::class, 'show']);
     Route::put('/update/{id}', [PostController::class, 'update']);
     Route::delete('/delete/{id}', [PostController::class, 'destroy']);
+});
+
+Route::prefix('/comment')->group(function() {
+    Route::post('/create/{postId}', [CommentController::class, 'store']);
+    Route::get('/get/{postId}', [CommentController::class, 'show']);
+    Route::put('/update/{commentId}', [CommentController::class, 'update']);
+    Route::delete('/delete/{commetId}', [CommentController::class, 'destroy']);
 });
