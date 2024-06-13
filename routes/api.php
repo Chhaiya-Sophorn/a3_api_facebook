@@ -31,4 +31,5 @@ Route::prefix('/post')->group(function () {
     Route::get('/get/{id}', [PostController::class, 'show']);
     Route::put('/update/{id}', [PostController::class, 'update']);
     Route::delete('/delete/{id}', [PostController::class, 'destroy']);
+    Route::post('/like-post',[LikesController::class, 'store']);
 });
