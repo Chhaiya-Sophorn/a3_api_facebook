@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,3 +47,4 @@ Route::prefix('/comment')->group(function() {
 
 Route::post('/password/email', [AuthController::class, 'sendEmailVerify']);
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+Route::post('/like-post',[LikesController::class, 'store']);
