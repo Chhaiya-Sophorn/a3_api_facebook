@@ -43,3 +43,6 @@ Route::prefix('/comment')->group(function() {
     Route::put('/update/{commentId}', [CommentController::class, 'update']);
     Route::delete('/delete/{commetId}', [CommentController::class, 'destroy']);
 });
+
+Route::post('/password/email', [AuthController::class, 'sendEmailVerify']);
+Route::post('/password/reset', [AuthController::class, 'resetPassword']);

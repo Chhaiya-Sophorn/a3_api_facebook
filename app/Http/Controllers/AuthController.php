@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\DB;
 
 
 class AuthController extends Controller
@@ -100,7 +101,7 @@ class AuthController extends Controller
     {
 
         $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = User::find($userId);
@@ -115,5 +116,52 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Profile image updated successfully']);
+    }
+
+    public function sendEmailVerify(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = DB::table('users')->where('email', '=', $request->email)->first();
+
+        if ($user) {
+            $passcord = Str::random(6);
+
+            DB::table('reset_passwords')->insert([
+                'email' => $request->email,
+                'passcord' => $passcord,
+            ]);
+
+            return response()->json(['message' => 'Password reset email sent successfully', 'passcord' => $passcord]);
+        } else {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $resetData = DB::table('reset_passwords')
+            ->where('email', $request->email)
+            ->where('passcord', $request->passcord)
+            ->first();
+
+        if (!$resetData) {
+            return response()->json(['message' => 'Reset password link is invalid'], 404);
+        }
+
+        $user = User::where('email', $resetData->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        DB::table('reset_passwords')->where('passcord', $resetData->passcord)->delete();
+
+        return response()->json(['message' => 'Password reset successfully']);
     }
 }
