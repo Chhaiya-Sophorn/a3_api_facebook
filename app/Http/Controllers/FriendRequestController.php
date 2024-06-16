@@ -187,38 +187,46 @@ class FriendRequestController extends Controller
     }
 
     public function deleteFriend($friendId)
-{
-    $userId = auth()->id();
-
-    // Find the accepted friend request between the current user and the provided friend ID
-    $friendRequest = FriendRequest::where(function ($query) use ($userId, $friendId) {
-        $query->where('sender_id', $userId)
-              ->where('receiver_id', $friendId)
-              ->where('status', 'accepted');
-    })
-    ->orWhere(function ($query) use ($userId, $friendId) {
-        $query->where('sender_id', $friendId)
-              ->where('receiver_id', $userId)
-              ->where('status', 'accepted');
-    })
-    ->first();
-
-    if (!$friendRequest) {
+    {
+        $userId = auth()->id();
+    
+        // Find the accepted friend request between the current user and the provided friend ID
+        $friendRequest = FriendRequest::where(function ($query) use ($userId, $friendId) {
+            $query->where('sender_id', $userId)
+                  ->where('receiver_id', $friendId)
+                  ->where('status', FriendRequest::STATUS_ACCEPTED);
+        })
+        ->orWhere(function ($query) use ($userId, $friendId) {
+            $query->where('sender_id', $friendId)
+                  ->where('receiver_id', $userId)
+                  ->where('status', FriendRequest::STATUS_ACCEPTED);
+        })
+        ->first();
+    
+        if (!$friendRequest) {
+            return response()->json([
+                'message' => 'You are not friends with the provided user.'
+            ], 404);
+        }
+    
+        // Delete the friend request
+        $friendRequest->delete();
+    
+        // Delete the associated reverse friend request (if it exists)
+        $reverseFriendRequest = FriendRequest::where(function ($query) use ($userId, $friendId) {
+            $query->where('sender_id', $friendId)
+                  ->where('receiver_id', $userId)
+                  ->where('status', FriendRequest::STATUS_ACCEPTED);
+        })
+        ->first();
+    
+        if ($reverseFriendRequest) {
+            $reverseFriendRequest->delete();
+        }
+    
         return response()->json([
-            'message' => 'No accepted friend request found between you and the provided user.'
-        ], 404);
+            'message' => 'You have successfully unfriended the provided user.'
+        ]);
     }
-
-    // Delete the friend request
-    $friendRequest->delete();
-
-    // Remove the friend from the user's friends list
-    $user = auth()->user();
-    $user->friends()->detach($friendId);
-
-    return response()->json([
-        'message' => 'Friend successfully deleted.'
-    ]);
-}
 
 }
