@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'profile_photo'=>$this->profile_photo,
             'posts' => PostUserResource::collection($this->posts),
         ];
     }

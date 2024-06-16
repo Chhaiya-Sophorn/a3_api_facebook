@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendRequestController;
+use App\Http\Controllers\LikeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -55,3 +56,10 @@ Route::prefix('/friendReqiest')->middleware('auth:sanctum')->group(function () {
     Route::put('/friend-requests/response/{friendRequest}/{status}', [FriendRequestController::class, 'response']);
     Route::delete('/friend-requests/deleteFriend/{friendId}', [FriendRequestController::class, 'deleteFriend']);
 });
+
+Route::post('/password/email', [AuthController::class, 'sendEmailVerify']);
+Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+
+Route::post('/posts/{postId}/like', [LikeController::class, 'likePost']);
+Route::delete('/posts/{postId}/unlike', [LikeController::class, 'unlikePost']);
+

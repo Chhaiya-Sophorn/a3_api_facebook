@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -80,4 +81,6 @@ class PostController extends Controller
             'message' => 'Post deleted successfully'
         ]);
     }
+
+
 }
