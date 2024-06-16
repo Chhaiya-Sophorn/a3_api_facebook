@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FriendRequestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,4 +44,14 @@ Route::prefix('/comment')->group(function() {
     Route::put('/update/{commentId}', [CommentController::class, 'update']);
     Route::delete('/delete/{commetId}', [CommentController::class, 'destroy']);
     Route::post('/like-post',[LikesController::class, 'store']);
+});
+
+Route::prefix('/friendReqiest')->middleware('auth:sanctum')->group(function () {
+    Route::get('/friend-requests-to', [FriendRequestController::class, 'index']);
+    Route::get('/friends', [FriendRequestController::class, 'friends']);
+    Route::get('/friend-requests', [FriendRequestController::class, 'friendRequests']);
+    Route::post('/friend-requests', [FriendRequestController::class, 'store']);
+    Route::delete('/friend-requests/unrequest/{friendRequest}', [FriendRequestController::class, 'destroy']);
+    Route::put('/friend-requests/response/{friendRequest}/{status}', [FriendRequestController::class, 'response']);
+    Route::delete('/friend-requests/deleteFriend/{friendId}', [FriendRequestController::class, 'deleteFriend']);
 });
