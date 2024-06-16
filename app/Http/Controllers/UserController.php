@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Resources\UserResource;
 
 
 class UserController extends Controller
@@ -34,9 +35,8 @@ class UserController extends Controller
     public function show($userId)
     {
         $user = User::findOrFail($userId);
-        return response()->json([
-            'data' => $user
-        ]);
+        $user = new UserResource($user);
+        return response(['success' => true, 'data' => $user, 'msg' => 'get user successfully']);
     }
 
     public function update(Request $request, $userId)
